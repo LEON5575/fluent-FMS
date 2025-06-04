@@ -1,7 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const smtpController = require("../controllers/smtpConfigController");
+const auth = require('../middlewares/auth');
 
+// All routes are protected with auth middleware
+router.use(auth);
 //! Create a new SMTP config for a project
 router.post("/projects/:projectId/smtp-configs", smtpController.createConfig);
 
@@ -16,6 +19,9 @@ router.put("/:id", smtpController.updateConfig);
 
 //! Soft delete
 router.delete("/:id", smtpController.deleteConfig);
+
+//! send test email
+router.post("/:smtpId/send-email", smtpController.sendMail);
 
 //! Restore a deleted SMTP config
 router.patch("/:id/restore", smtpController.restoreConfig);
