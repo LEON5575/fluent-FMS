@@ -2,10 +2,13 @@ const express = require('express');
 const router = express.Router();
 const projectController = require('../controllers/projectController');
 const auth = require('../middlewares/auth');
+let  validAuth = require('../middlewares/authValid');
 
 // All routes are protected with auth middleware
 router.use(auth);
-
+router.use(validAuth);
+// Filter projects
+router.get('/filter', projectController.filterProjects);
 // Get all projects
 router.get('/', projectController.getProjects);
 
@@ -26,5 +29,7 @@ router.delete('/:id', projectController.deleteProject);
 
 // Restore deleted project
 router.post('/:id/restore', projectController.restoreProject);
+
+
 
 module.exports = router; 

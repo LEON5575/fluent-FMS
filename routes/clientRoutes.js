@@ -2,12 +2,13 @@ const express = require('express');
 const router = express.Router();
 const clientController = require('../controllers/clientController');
 const auth = require('../middlewares/auth');
+let  validAuth = require('../middlewares/authValid');
 
 // All routes are protected with auth middleware
 router.use(auth);
-
+router.use(validAuth);
 // Get all clients
-router.get('/', clientController.getClients);
+router.get('/get', clientController.getClients);
 
 // Get single client
 router.get('/:id', clientController.getClient);

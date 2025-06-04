@@ -1,11 +1,17 @@
 Models:
     Client: Includes fields for name, email, phone, company, address, and timestamps
     Project: Includes fields for name, description, clientId (reference to Client), start/end dates, status, budget, and timestamps
-    SMTPConfig: Includes fields for name,host,port,status,secure,authUser,authPass,deleted,createdAt,updatedAt
+    SMTPConfig: Includes fields for name,host,port,status,secure,authUser,authPass,deleted and timestamps
+    emailTemplate: Includes fields for  name, subject ,body and timestamps
+    form : Includes fields for  Forms_id, projectId, name, formIdString, linkedSmtpId, adminTemplateId, userTemplateId and timestamps
+    formSubmission:Includes fields for formId,submissionData(Object),attachments(Array),createdAt
 Controllers:
     clientController: Handles CRUD operations for clients
     projectController: Handles CRUD operations for projects, including getting projects by client
-    smtpController: Handles CRUD operations for smtpConfig
+    smtpController: Handles CRUD operations for smtpConfig, including getting smtpConfigs by projects
+    emailTemplateController : CRUD operations for emailTemplate, including getting emailTemplate by projects
+    formController: CRUD operations for form, including getting emailTemplate by projects
+    formSubmissionController: CRUD operations for formSubmission, including getting formSubmission by form
 Routes:
     Client Routes (/api/clients):
         GET /: Get all clients
@@ -21,8 +27,34 @@ Routes:
         PUT /:id: Update a project
         DELETE /:id: Delete a project
     SMTPConfig Routes (/api/smtpConfigs):
-         GET //projects/:projectId/smtp-configs Get all smtpConfig data
+        GET /projects/:projectId/smtp-configs Get all smtpConfig data for specific projects
         GET /:id: Get a single smtpConfig data
-        POST //projects/:projectId/smtp-configs Create a new smtpConfig
+        POST /projects/:projectId/smtp-configs Create a new smtpConfig
+        POST /:projectId/send-email    Send the email 
         PUT /:id: Update a smtpConfig
         DELETE /:id: Delete a smtpConfig
+    EmailTemplate Routes (/api/emailTemplates):
+        GET  /projects/:projectId/email-templates  Get All templates for specific projects
+        GET /:id: Get a single emailTemplate data
+        POST //projects/:projectId/email-templates Create a new emailTemplates
+        PUT /:id: Update a emailTemplate
+        DELETE /:id: Delete a emailTemplate
+    Form Routes (/api/forms):
+        GET  /projects/:projectId/forms Get All forms for specific projects
+        GET /:id: Get a single form data
+        POST //projects/:projectId/forms Create a new emailTemplates
+        PUT /:id: Update a form
+        DELETE /:id: Delete a form
+    Form-Submission Routes (/api/formsubmissions):
+        GET     /api/formsubmissions/form-submissions           Get all submissions for a specific project (filter is optional)
+        GET     /api/formsubmissions/form-submissions/:id                           Get a single form submission by ID
+        POST    /api/formsubmissions/submit          Submit form data (public endpoint or with token)
+        PUT     /api/formsubmissions/form-submissions/:id                           Update a form submission
+        DELETE  /api/formsubmissions/form-submissions/:id                           Delete a form submission
+
+
+
+
+
+
+if bearer has double space u will get 403 unauthorized error

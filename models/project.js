@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
+require('dotenv').config(); // Ensure env vars are loaded
 
 const projectSchema = new mongoose.Schema({
   name: {
@@ -24,7 +26,7 @@ const projectSchema = new mongoose.Schema({
   },
   status: {
     type: Number,
-    enum: [1, 5], // 1: live, 5: deleted
+    enum: [1, 5], // 1: active, 5: deleted
     default: 1
   },
   projectStatus: {
@@ -36,6 +38,10 @@ const projectSchema = new mongoose.Schema({
     type: Number,
     min: 0
   },
+  active: {
+    type: Boolean,
+    default: true
+  },
   createdAt: {
     type: Date,
     default: Date.now
@@ -46,28 +52,39 @@ const projectSchema = new mongoose.Schema({
   }
 });
 
-// Update the timestamps before saving
-projectSchema.pre('save', function(next) {
+// Auto-update timestamps on save
+projectSchema.pre('save', function (next) {
   this.updatedAt = Date.now();
   next();
 });
 
-// Add a method to soft delete
-projectSchema.methods.softDelete = async function() {
+//  Soft delete method
+projectSchema.methods.softDelete = async function () {
   this.status = 5;
   this.updatedAt = Date.now();
   return await this.save();
 };
 
-// Modify all find queries to exclude soft deleted documents by default
-projectSchema.pre(/^find/, function(next) {
-  // Add status condition only if not explicitly included in query
+//  Exclude soft-deleted projects from all find queries unless explicitly overridden
+projectSchema.pre(/^find/, function (next) {
   if (!this.getQuery().hasOwnProperty('status')) {
     this.find({ status: 1 });
   }
   next();
 });
 
-const Project = mongoose.model('Project', projectSchema);
+// Generate a token specific to this project (used for form access)
+projectSchema.methods.generateProjectToken = function () {
+  const payload = {
+    _id: this._id,
+    name: this.name,
+    clientId: this.clientId
+  };
 
-module.exports = Project; 
+  return jwt.sign(payload, process.env.PROJECT_TOKEN_SECRET, {
+    expiresIn: '4d'
+  });
+};
+
+const Project = mongoose.model('Project', projectSchema);
+module.exports = Project;

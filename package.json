@@ -12,12 +12,25 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "axios": "^1.9.0",
     "bcrypt": "^6.0.0",
     "bcryptjs": "^3.0.2",
+    "cloudinary": "^2.6.1",
+    "cookie-parser": "^1.4.7",
+    "csv-writer": "^1.6.0",
     "dotenv": "^16.5.0",
+    "exceljs": "^4.4.0",
     "express": "^5.1.0",
+    "express-fileupload": "^1.5.1",
+    "file-type": "^21.0.0",
+    "fileupload": "^1.0.0",
+    "handlebars": "^4.7.8",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.15.1"
+    "moment": "^2.30.1",
+    "mongoose": "^8.15.1",
+    "multer": "^2.0.1",
+    "nodemailer": "^7.0.3",
+    "streamifier": "^0.1.1"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"

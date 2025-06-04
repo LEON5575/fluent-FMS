@@ -21,12 +21,6 @@ const smtpConfigSchema = new mongoose.Schema(
       type: Number,
       required: true
     },
-    // 1: active, 5: soft deleted
-    status: {
-      type: Number,
-      enum: [1, 5],
-      default: 1
-    },
     secure: {
       type: Boolean,
       default: false
@@ -40,6 +34,15 @@ const smtpConfigSchema = new mongoose.Schema(
       type: String,
       required: true
     },
+    fromEmail: {
+      type: String,
+      trim: true
+    },
+    status: {
+      type: Number,
+      enum: [1, 5], // 1: active, 5: soft-deleted
+      default: 1
+    },
     deleted: {
       type: Boolean,
       default: false
@@ -50,26 +53,26 @@ const smtpConfigSchema = new mongoose.Schema(
   }
 );
 
-// Update the updatedAt timestamp before saving
+// Update `updatedAt` on save
 smtpConfigSchema.pre("save", function (next) {
   this.updatedAt = Date.now();
   next();
 });
 
-// Soft delete method (marks as deleted, doesn't remove from DB)
-smtpConfigSchema.methods.softDelete = async function () {
-  this.status = 5;
-  this.deleted = true;
-  this.updatedAt = Date.now();
-  return await this.save();
-};
-
-// Automatically exclude soft-deleted configs unless status is explicitly queried
+// Auto-exclude soft-deleted
 smtpConfigSchema.pre(/^find/, function (next) {
   if (!this.getQuery().hasOwnProperty("status")) {
     this.find({ status: 1 });
   }
   next();
 });
+
+// Soft delete method
+smtpConfigSchema.methods.softDelete = async function () {
+  this.status = 5;
+  this.deleted = true;
+  this.updatedAt = Date.now();
+  return await this.save();
+};
 
 module.exports = mongoose.model("SMTPConfig", smtpConfigSchema);
