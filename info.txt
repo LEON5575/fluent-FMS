@@ -1,0 +1,28 @@
+Models:
+    Client: Includes fields for name, email, phone, company, address, and timestamps
+    Project: Includes fields for name, description, clientId (reference to Client), start/end dates, status, budget, and timestamps
+    SMTPConfig: Includes fields for name,host,port,status,secure,authUser,authPass,deleted,createdAt,updatedAt
+Controllers:
+    clientController: Handles CRUD operations for clients
+    projectController: Handles CRUD operations for projects, including getting projects by client
+    smtpController: Handles CRUD operations for smtpConfig
+Routes:
+    Client Routes (/api/clients):
+        GET /: Get all clients
+        GET /:id: Get a single client
+        POST /: Create a new client
+        PUT /:id: Update a client
+        DELETE /:id: Delete a client
+    Project Routes (/api/projects):
+        GET /: Get all projects
+        GET /:id: Get a single project
+        GET /client/:clientId: Get all projects for a specific client
+        POST /: Create a new project
+        PUT /:id: Update a project
+        DELETE /:id: Delete a project
+    SMTPConfig Routes (/api/smtpConfigs):
+         GET //projects/:projectId/smtp-configs Get all smtpConfig data
+        GET /:id: Get a single smtpConfig data
+        POST //projects/:projectId/smtp-configs Create a new smtpConfig
+        PUT /:id: Update a smtpConfig
+        DELETE /:id: Delete a smtpConfig
