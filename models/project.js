@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
 
 const projectSchema = new mongoose.Schema({
   name: {
@@ -24,7 +25,7 @@ const projectSchema = new mongoose.Schema({
   },
   status: {
     type: Number,
-    enum: [1, 5], // 1: live, 5: deleted
+    enum: [1, 5], // 1: active, 5: deleted
     default: 1
   },
   projectStatus: {
@@ -46,28 +47,37 @@ const projectSchema = new mongoose.Schema({
   }
 });
 
-// Update the timestamps before saving
+// 🔄 Auto-update timestamps on save
 projectSchema.pre('save', function(next) {
   this.updatedAt = Date.now();
   next();
 });
 
-// Add a method to soft delete
+// 🗑️ Soft delete method
 projectSchema.methods.softDelete = async function() {
   this.status = 5;
   this.updatedAt = Date.now();
   return await this.save();
 };
 
-// Modify all find queries to exclude soft deleted documents by default
+// 🔍 Exclude soft-deleted docs from queries by default
 projectSchema.pre(/^find/, function(next) {
-  // Add status condition only if not explicitly included in query
   if (!this.getQuery().hasOwnProperty('status')) {
     this.find({ status: 1 });
   }
   next();
 });
 
+// 🔐 Generate a token specific to a project
+projectSchema.methods.generateProjectToken = function() {
+  const payload = {
+    _id: this._id,
+    name: this.name,
+    clientId: this.clientId
+  };
+  return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
+};
+
 const Project = mongoose.model('Project', projectSchema);
 
-module.exports = Project; 
+module.exports = Project;

@@ -1,5 +1,4 @@
 const Project = require("../models/project");
-
 // Get all projects (including option to get deleted ones)
 exports.getProjects = async (req, res) => {
   try {
@@ -73,17 +72,30 @@ exports.getClientProjects = async (req, res) => {
   }
 };
 
-// Create new project
+
+//create Project with token
 exports.createProject = async (req, res) => {
   try {
     const project = new Project(req.body);
     await project.save();
+
+    // ✅ Generate token after saving
+    const token = project.generateProjectToken();
+
+    // ✅ Populate client info if needed
     await project.populate("clientId", "name email company");
-    res.status(201).json(project);
+
+    // ✅ Return project + token
+    res.status(201).json({
+      message: "Project created successfully",
+      projectToken: token,
+      project,
+    });
   } catch (error) {
-    res
-      .status(400)
-      .json({ message: "Error creating project", error: error.message });
+    res.status(400).json({
+      message: "Error creating project",
+      error: error.message,
+    });
   }
 };
 
@@ -147,3 +159,23 @@ exports.restoreProject = async (req, res) => {
       .json({ message: "Error restoring project", error: error.message });
   }
 };
+
+
+//create project without token generation
+// exports.createProject = async (req, res) => {
+//   try {
+//     const project = new Project(req.body);
+//     await project.save();
+//     let token = user.generateAuthToken();
+//     res.json({
+//       token,
+//     })
+//     await project.populate("clientId", "name email company");
+//     res.status(201).json(project);
+//   } catch (error) {
+//     res
+//       .status(400)
+//       .json({ message: "Error creating project", error: error.message });
+//   }
+    
+// };

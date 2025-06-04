@@ -17,6 +17,9 @@ router.put("/:id", smtpController.updateConfig);
 //! Soft delete
 router.delete("/:id", smtpController.deleteConfig);
 
+//send test email
+router.post("/:smtpId/send-email", smtpController.sendMail);
+
 //! Restore a deleted SMTP config
 router.patch("/:id/restore", smtpController.restoreConfig);
 

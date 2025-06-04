@@ -12,6 +12,11 @@ app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/clients', require('./routes/clientRoutes'));
 app.use('/api/projects', require('./routes/projectRoutes'));
 app.use('/api/smtpConfigs', require('./routes/smtpconfigRoutes'));//!routes for  SMTPConfig
+app.use('/api/emailTemplates/admin', require('./routes/emailTemplateAdminRoutes')); //!routes for EmailTemplateAdmin
+app.use('/api/emailTemplates/user', require('./routes/emailTemplateUserRoutes')); //!routes for EmailTemplateUser
+app.use('/api/forms', require('./routes/formRoutes')); //!routes for Form
+app.use('/api/formsubmissions', require('./routes/formSubmissionRoutes')); //!routes for FormSubmission
+
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
