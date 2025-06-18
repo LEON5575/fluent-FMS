@@ -9,81 +9,81 @@ const { createObjectCsvWriter } = require("csv-writer");
 const ExcelJS = require("exceljs");
 let moment = require('moment');
 // utils
-const {
-  getMonth,
-  getLast3Months,
-  getLast6Months,
-  getLast12Months,
-} = require("../utils/month");
-const { getCurrentYear, getLastYear } = require("../utils/year");
-const { getCustomDateRange } = require("../utils/date");
+    const {
+      getMonth,
+      getLast3Months,
+      getLast6Months,
+      getLast12Months,
+    } = require("../utils/month");
+    const { getCurrentYear, getLastYear } = require("../utils/year");
+    const { getCustomDateRange } = require("../utils/date");
 // helper
 function getDateRangeFromQuery(query) {
-  let { filterType, fromDate, toDate } = query;
-  let start, end;
+    let { filterType, fromDate, toDate } = query;
+    let start, end;
 
-  // Log the incoming query parameters for debugging
-  console.log('Incoming Query:', query);
+    // Log the incoming query parameters for debugging
+    //console.log('Incoming Query:', query);
 
-  // If no filterType is provided, return a wide date range (all data)
-  if (!filterType) {
-    console.log('No filterType provided, returning all data (from start to today)');
-    start = new Date(0); // Start of time (January 1st, 1970)
-    end = new Date(); // Current date
-  } else {
-    switch (filterType) {
-      case "month":
-        ({ start, end } = getMonth(1));
-        break;
-      case "last3Months":
-        ({ start, end } = getLast3Months());
-        break;
-      case "last6Months":
-        ({ start, end } = getLast6Months());
-        break;
-      case "last12Months":
-        ({ start, end } = getLast12Months());
-        break;
-      case "currentYear":
-        ({ start, end } = getCurrentYear());
-        break;
-      case "lastYear":
-        ({ start, end } = getLastYear());
-        break;
-      case "range":
-        if (fromDate && toDate) {
-          console.log('fromDate:', fromDate, 'toDate:', toDate);
-          
-          // Manually adjust toDate if it's invalid (e.g., June 31st becomes June 30th)
-          const toMoment = moment(toDate);
-          if (!toMoment.isValid()) {
-            console.error("Invalid toDate detected:", toDate);
-            // Adjust to the last valid day of the month
-            toMoment.endOf('month');
+    // If no filterType is provided, return a wide date range (all data)
+    if (!filterType) {
+      console.log('No filterType provided, returning all data (from start to today)');
+      start = new Date(0); // Start of time (January 1st, 1970)
+      end = new Date(); // Current date
+    } else {
+      switch (filterType) {
+        case "month":
+          ({ start, end } = getMonth(1));
+          break;
+        case "last3Months":
+          ({ start, end } = getLast3Months());
+          break;
+        case "last6Months":
+          ({ start, end } = getLast6Months());
+          break;
+        case "last12Months":
+          ({ start, end } = getLast12Months());
+          break;
+        case "currentYear":
+          ({ start, end } = getCurrentYear());
+          break;
+        case "lastYear":
+          ({ start, end } = getLastYear());
+          break;
+        case "range":
+          if (fromDate && toDate) {
+            console.log('fromDate:', fromDate, 'toDate:', toDate);
+            
+            // Manually adjust toDate if it's invalid (e.g., June 31st becomes June 30th)
+            const toMoment = moment(toDate);
+            if (!toMoment.isValid()) {
+              console.error("Invalid toDate detected:", toDate);
+              // Adjust to the last valid day of the month
+              toMoment.endOf('month');
+            }
+            ({ start, end } = getCustomDateRange(fromDate, toMoment.format('YYYY-MM-DD')));
+          } else {
+            throw new Error("Missing fromDate or toDate for custom range.");
           }
-          ({ start, end } = getCustomDateRange(fromDate, toMoment.format('YYYY-MM-DD')));
-        } else {
-          throw new Error("Missing fromDate or toDate for custom range.");
-        }
-        break;
-      default:
-        ({ start, end } = getMonth(1)); // Default to last month
+          break;
+        default:
+          ({ start, end } = getMonth(1)); // Default to last month
+      }
     }
-  }
-  // Parse the start and end dates using Moment.js
-  start = moment(start);
-  end = moment(end);
-  // Log the parsed dates for debugging
-  console.log('Parsed Start Date:', start.format(), 'Parsed End Date:', end.format());
-  // Ensure that the dates are valid
-  if (!start.isValid() || !end.isValid()) {
-    throw new Error("Invalid date range");
-  }
-  //Convert moment objects to JavaScript Date objects
-  start = start.toDate();
-  end = end.toDate();
-  // Return the start and end date
-  return { start, end };
+    // Parse the start and end dates using Moment.js
+    start = moment(start);
+    end = moment(end);
+    // Log the parsed dates for debugging
+    console.log('Parsed Start Date:', start.format(), 'Parsed End Date:', end.format());
+    // Ensure that the dates are valid
+    if (!start.isValid() || !end.isValid()) {
+      throw new Error("Invalid date range");
+    }
+    //Convert moment objects to JavaScript Date objects
+    start = start.toDate();
+    end = end.toDate();
+    // Return the start and end date
+    return { start, end };
 }
 
 //^ Export project submissions as CSV

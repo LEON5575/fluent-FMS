@@ -168,26 +168,6 @@ exports.restoreProject = async (req, res) => {
   }
 };
 
-
-//create project without token generation
-// exports.createProject = async (req, res) => {
-//   try {
-//     const project = new Project(req.body);
-//     await project.save();
-//     let token = user.generateAuthToken();
-//     res.json({
-//       token,
-//     })
-//     await project.populate("clientId", "name email company");
-//     res.status(201).json(project);
-//   } catch (error) {
-//     res
-//       .status(400)
-//       .json({ message: "Error creating project", error: error.message });
-//   }
-    
-// };
-
 //?filter endpoints
 // Filter projects by name (and optionally other filters)
 exports.filterProjects = async (req, res) => {
@@ -209,4 +189,24 @@ exports.filterProjects = async (req, res) => {
     res.json({ message: 'Error filtering projects', error: error.message });
   }
 };
+
+      //create project without token generation
+
+//exports.createProject = async (req, res) => {
+//   try {
+//     const project = new Project(req.body);
+//     await project.save();
+//     let token = user.generateAuthToken();
+//     res.json({
+//       token,
+//     })
+//     await project.populate("clientId", "name email company");
+//     res.status(201).json(project);
+//   } catch (error) {
+//     res
+//       .status(400)
+//       .json({ message: "Error creating project", error: error.message });
+//   }
+    
+//};
 

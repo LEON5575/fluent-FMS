@@ -64,4 +64,4 @@ clientSchema.pre(/^find/, function(next) {
 
 const Client = mongoose.model('Client', clientSchema);
 
-module.exports = Client; 
+module.exports = Client;
