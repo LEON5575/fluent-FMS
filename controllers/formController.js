@@ -11,15 +11,15 @@ exports.createForm = async (req, res) => {
     // Step 1: Validate project
     const project = await Project.findById(projectId);
     if (!project) {
-      return res.status(404).json({ message: "Project not found" });
+      return res.json({ message: "Project not found" });
     }
     if (!project.active) {
-      return res.status(400).json({ message: "Cannot create form: associated project is not active" });
+      return res.json({ message: "Cannot create form: associated project is not active" });
     }
 
     // Step 2: Ensure 'active' is true
     if (req.body.active !== true) {
-      return res.status(400).json({ message: "Cannot create form: 'active' must be true" });
+      return res.json({ message: "Cannot create form: 'active' must be true" });
     }
 
     // Step 3: Create form
@@ -32,7 +32,7 @@ exports.createForm = async (req, res) => {
     // Step 4: Fetch linked SMTP config
     const smtp = await SMTPConfig.findById(form.linkedSmtpId);
     if (!smtp || smtp.status !== 1) {
-      return res.status(201).json({ 
+      return res.json({ 
         form,
         warning: "Form created, but email was not sent (SMTP config invalid or inactive)" 
       });
@@ -56,11 +56,11 @@ exports.createForm = async (req, res) => {
       html: `<p>A new form <strong>${form.name}</strong> was created under project <strong>${project.name}</strong>.</p>`
     });
 
-    res.status(201).json({ form, message: "Form created and email sent" });
+    res.json({ form, message: "Form created and email sent" });
 
   } catch (error) {
     console.error("Create form error:", error);
-    res.status(500).json({
+    res.json({
       message: "Failed to create form",
       error: error.message
     });
@@ -120,7 +120,7 @@ exports.updateForm = async (req, res) => {
     });
 
     if (!form) {
-      return res.status(404).json({ message: "Form not found" });
+      return res.json({ message: "Form not found" });
     }
     res.json(form);
   } catch (error) {

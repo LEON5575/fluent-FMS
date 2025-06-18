@@ -70,28 +70,21 @@ function getDateRangeFromQuery(query) {
         ({ start, end } = getMonth(1)); // Default to last month
     }
   }
-
   // Parse the start and end dates using Moment.js
   start = moment(start);
   end = moment(end);
-
   // Log the parsed dates for debugging
   console.log('Parsed Start Date:', start.format(), 'Parsed End Date:', end.format());
-
   // Ensure that the dates are valid
   if (!start.isValid() || !end.isValid()) {
     throw new Error("Invalid date range");
   }
-
-  // Convert moment objects to JavaScript Date objects
+  //Convert moment objects to JavaScript Date objects
   start = start.toDate();
   end = end.toDate();
-
   // Return the start and end date
   return { start, end };
 }
-
-
 
 //^ Export project submissions as CSV
 exports.exportCSV = async (req, res) => {
